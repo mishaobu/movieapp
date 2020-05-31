@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.movieBlockDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.movieBlock {
+  padding-top: 40px;
+  width: 220px;
+  height: 345px;
+  padding-left: 15px;
+}
+
+.movieBlock:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
