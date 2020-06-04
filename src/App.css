@@ -50,6 +50,6 @@
 }
 
 .movieBlock:hover {
-  opacity: 50%;
+  opacity: .7;
   cursor: pointer;
 }

@@ -75,7 +75,7 @@ export default class MoviePage extends Component {
       moreLoadable = false;
     }
     this.setState({
-      moreLoadable: moreLoadable,
+      //moreLoadable: moreLoadable,
       totalLoaded: this.state.totalLoaded + 8,
     })
   }
@@ -185,22 +185,31 @@ export default class MoviePage extends Component {
   }
 
   handleSearchChange(e) {
+    let activeFilter;
     this.setState({
-      search: e.target.value,
+      search: e.target.value
     });
     if (e.target.value !== "") {
-      this.state.activeFilter = true;
+      activeFilter = true;
     } else {
-      this.state.activeFilter = false;
+      activeFilter = false;
     }
     let filteredMovies = [];
     for (let i in this.state.movies) {
-      if (this.state.movies[i].Title.toLowerCase().includes(e.target.value)) {
+      if (this.state.movies[i].Title.toLowerCase().includes(e.target.value.toLowerCase())) {
         filteredMovies.push(this.state.movies[i]);
       }
     }
+
+    // } 
+    //   this.setState{[
+    //     moreLoadable: true,
+    //     totalLoaded: 100
+    //   ]}
+    // }
     this.setState({
       filteredMovies: filteredMovies,
+      activeFilter: activeFilter,
     });
   }
 
@@ -210,7 +219,6 @@ export default class MoviePage extends Component {
       firebase.initializeApp(config);
     }
 
-    //if (!(this.state.showLists)) {
     let ref = firebase.database().ref("movieid");
     ref.on("value", (snapshot) => {
       let newState = [];
@@ -259,8 +267,11 @@ export default class MoviePage extends Component {
     });
   }
 
+
   render() {
     const lists = this.state.lists;
+    let moreLoadable = this.state.moreLoadable;
+    console.log(this.state.moreLoadable, this.state.movies.length, this.state.totalLoaded)
     return (
       <div className="moviePage">
         <Navbar bg="light" expand="lg">
@@ -316,17 +327,16 @@ export default class MoviePage extends Component {
 
         <div className = "movieBlockDiv">
           {this.state.activeFilter
-            ? this.state.filteredMovies.slice(0,this.state.totalLoaded).map((movieJSON, index) => (
+            ? this.state.filteredMovies.map((movieJSON, index) => (
                 <MovieBlock key={index} json={movieJSON} lists={this.state.lists} />
               ))
             : this.state.movies.slice(0,this.state.totalLoaded).map((movieJSON, index) => (
-                <MovieBlock key={index} json={movieJSON} lists={lists.slice(1,)}
-                />
+                <MovieBlock key={index} json={movieJSON} lists={lists.slice(1,)} />
               ))
           }
         </div>
 
-        {this.state.moreLoadable ?
+        {(this.state.moreLoadable && !(this.state.activeFilter) && !(this.state.movies.length <= this.state.totalLoaded)) ?
           <Button center className = "mt-4" variant = "outline-success" onClick = {this.increaseLoad}> Load More </Button> : <></>
         }
         <br/><br/>
